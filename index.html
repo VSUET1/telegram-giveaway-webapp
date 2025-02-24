@@ -7,188 +7,272 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --tg-theme-bg-color: #18222d;
-            --tg-theme-text-color: #ffffff;
-            --tg-theme-button-color: #3390ec;
-            --tg-theme-button-text-color: #ffffff;
+            --primary-color: #3390ec;
+            --bg-color: #18222d;
+            --text-color: #ffffff;
+            --card-bg: #1c2b3a;
+            --hover-color: #2b7dd2;
+            --success-color: #4CAF50;
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #ffffff;
+            --text-color: #18222d;
+            --card-bg: #f5f5f5;
+            --hover-color: #2b7dd2;
         }
 
         body {
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--card-bg);
+            transition: var(--transition);
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--primary-color);
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
         }
 
         .container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            flex: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
         }
 
-        .header {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #1c2b3a 0%, #233446 100%);
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .prize-card {
-            background: linear-gradient(135deg, #2b5278 0%, #1e3a56 100%);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .prize-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .prize-features {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--card-bg) 100%);
+            border-radius: 20px;
+            padding: 30px;
             margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: scale(0.98);
+            transition: var(--transition);
+        }
+
+        .prize-card:hover {
+            transform: scale(1);
+            box-shadow: 0 15px 40px rgba(51,144,236,0.2);
         }
 
         .feature-item {
+            background: rgba(51,144,236,0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
             display: flex;
             align-items: center;
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
+            transform: translateX(-20px);
+            opacity: 0;
+            animation: slideIn 0.5s ease forwards;
         }
 
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .feature-item:nth-child(2) { animation-delay: 0.2s; }
+        .feature-item:nth-child(3) { animation-delay: 0.4s; }
+        .feature-item:nth-child(4) { animation-delay: 0.6s; }
+
         .feature-icon {
-            margin-right: 10px;
-            font-size: 20px;
+            font-size: 24px;
+            margin-right: 15px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
 
         .button {
-            background-color: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
+            background: var(--primary-color);
+            color: #ffffff;
             border: none;
-            border-radius: 8px;
-            padding: 16px 32px;
-            font-size: 16px;
+            border-radius: 12px;
+            padding: 18px 36px;
+            font-size: 18px;
             font-weight: bold;
             width: 100%;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
         }
 
         .button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(51, 144, 236, 0.3);
+            box-shadow: 0 10px 20px rgba(51,144,236,0.3);
+        }
+
+        .button:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255,255,255,.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .button:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(100, 100);
+                opacity: 0;
+            }
         }
 
         .loading {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 40px;
         }
 
-        .loading-animation {
+        .loading-spinner {
             display: inline-block;
             position: relative;
             width: 80px;
             height: 80px;
         }
 
-        .loading-animation div {
+        .loading-spinner div {
+            box-sizing: border-box;
+            display: block;
             position: absolute;
-            border: 4px solid #3390ec;
-            opacity: 1;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border: 8px solid var(--primary-color);
             border-radius: 50%;
-            animation: loading-animation 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+            animation: loading-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: var(--primary-color) transparent transparent transparent;
         }
 
-        .loading-animation div:nth-child(2) {
-            animation-delay: -0.5s;
-        }
+        .loading-spinner div:nth-child(1) { animation-delay: -0.45s; }
+        .loading-spinner div:nth-child(2) { animation-delay: -0.3s; }
+        .loading-spinner div:nth-child(3) { animation-delay: -0.15s; }
 
-        @keyframes loading-animation {
-            0% {
-                top: 36px;
-                left: 36px;
-                width: 0;
-                height: 0;
-                opacity: 0;
-            }
-            4.9% {
-                top: 36px;
-                left: 36px;
-                width: 0;
-                height: 0;
-                opacity: 0;
-            }
-            5% {
-                top: 36px;
-                left: 36px;
-                width: 0;
-                height: 0;
-                opacity: 1;
-            }
-            100% {
-                top: 0px;
-                left: 0px;
-                width: 72px;
-                height: 72px;
-                opacity: 0;
-            }
+        @keyframes loading-spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .success {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 40px;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: var(--transition);
         }
 
-        .confetti {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 1000;
+        .success.show {
+            opacity: 1;
+            transform: scale(1);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎁 Розыгрыш Telegram Premium</h1>
-            <p>Участвуйте в розыгрыше и выиграйте годовую подписку!</p>
-        </div>
+    <div class="theme-switch">
+        <label class="switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="slider"></span>
+        </label>
+    </div>
 
+    <div class="container">
         <div class="prize-card">
-            <div class="prize-title">Telegram Premium на 1 год</div>
-            <div class="prize-features">
+            <h1 style="text-align: center; margin-bottom: 30px;">🎁 Розыгрыш Telegram Premium</h1>
+            <div class="features">
                 <div class="feature-item">
                     <span class="feature-icon">🚀</span>
-                    <span>Увеличенные лимиты и скорость</span>
+                    <span>Увеличенные лимиты и скорость загрузки</span>
                 </div>
                 <div class="feature-item">
                     <span class="feature-icon">🎨</span>
-                    <span>Эксклюзивные стикеры и реакции</span>
+                    <span>Эксклюзивные стикеры и анимированные эмодзи</span>
                 </div>
                 <div class="feature-item">
                     <span class="feature-icon">🔕</span>
-                    <span>Отключение рекламы</span>
+                    <span>Отключение рекламы в каналах</span>
                 </div>
                 <div class="feature-item">
                     <span class="feature-icon">💫</span>
-                    <span>Анимированные аватары</span>
+                    <span>Анимированные аватары профиля</span>
                 </div>
             </div>
         </div>
@@ -196,7 +280,9 @@
         <button class="button" id="participateBtn">✨ Участвовать в розыгрыше</button>
 
         <div class="loading" id="loading">
-            <div class="loading-animation"><div></div><div></div></div>
+            <div class="loading-spinner">
+                <div></div><div></div><div></div><div></div>
+            </div>
             <p>Проверяем вашу заявку...</p>
         </div>
 
@@ -207,19 +293,36 @@
         </div>
     </div>
 
-    <canvas id="confetti" class="confetti"></canvas>
-
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
         tg.MainButton.hide();
 
+        // Инициализация темы
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        // Установка начальной темы
+        if (tg.colorScheme === 'light') {
+            body.setAttribute('data-theme', 'light');
+            themeToggle.checked = true;
+        }
+
+        // Переключение темы
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
+                body.setAttribute('data-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+            }
+        });
+
+        // Обработка участия
         document.getElementById('participateBtn').addEventListener('click', async () => {
             const loading = document.getElementById('loading');
             const success = document.getElementById('success');
             const button = document.getElementById('participateBtn');
-            const confettiCanvas = document.getElementById('confetti');
             
             button.style.display = 'none';
             loading.style.display = 'block';
@@ -229,16 +332,19 @@
             
             loading.style.display = 'none';
             success.style.display = 'block';
-
-            // Запускаем конфетти
-            confetti.create(confettiCanvas, {
-                resize: true,
-                useWorker: true
-            })({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
+            
+            // Анимация появления успеха
+            setTimeout(() => {
+                success.classList.add('show');
+                
+                // Запускаем конфетти
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#3390ec', '#ffffff', '#4CAF50']
+                });
+            }, 100);
             
             // Отправляем данные в бот
             tg.sendData(JSON.stringify({
@@ -251,15 +357,6 @@
                 tg.close();
             }, 3000);
         });
-
-        // Применяем цветовую схему Telegram
-        if (tg.colorScheme === 'dark') {
-            document.documentElement.style.setProperty('--tg-theme-bg-color', '#18222d');
-            document.documentElement.style.setProperty('--tg-theme-text-color', '#ffffff');
-        } else {
-            document.documentElement.style.setProperty('--tg-theme-bg-color', '#ffffff');
-            document.documentElement.style.setProperty('--tg-theme-text-color', '#18222d');
-        }
     </script>
 </body>
 </html> 
