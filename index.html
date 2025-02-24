@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Розыгрыш Telegram Premium</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --tg-theme-bg-color: #18222d;
+            --tg-theme-text-color: #ffffff;
+            --tg-theme-button-color: #3390ec;
+            --tg-theme-button-text-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #1c2b3a 0%, #233446 100%);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .prize-card {
+            background: linear-gradient(135deg, #2b5278 0%, #1e3a56 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .prize-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .prize-features {
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+
+        .feature-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .button {
+            background-color: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            border: none;
+            border-radius: 8px;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(51, 144, 236, 0.3);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading-animation {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .loading-animation div {
+            position: absolute;
+            border: 4px solid #3390ec;
+            opacity: 1;
+            border-radius: 50%;
+            animation: loading-animation 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        }
+
+        .loading-animation div:nth-child(2) {
+            animation-delay: -0.5s;
+        }
+
+        @keyframes loading-animation {
+            0% {
+                top: 36px;
+                left: 36px;
+                width: 0;
+                height: 0;
+                opacity: 0;
+            }
+            4.9% {
+                top: 36px;
+                left: 36px;
+                width: 0;
+                height: 0;
+                opacity: 0;
+            }
+            5% {
+                top: 36px;
+                left: 36px;
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            100% {
+                top: 0px;
+                left: 0px;
+                width: 72px;
+                height: 72px;
+                opacity: 0;
+            }
+        }
+
+        .success {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎁 Розыгрыш Telegram Premium</h1>
+            <p>Участвуйте в розыгрыше и выиграйте годовую подписку!</p>
+        </div>
+
+        <div class="prize-card">
+            <div class="prize-title">Telegram Premium на 1 год</div>
+            <div class="prize-features">
+                <div class="feature-item">
+                    <span class="feature-icon">🚀</span>
+                    <span>Увеличенные лимиты и скорость</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🎨</span>
+                    <span>Эксклюзивные стикеры и реакции</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔕</span>
+                    <span>Отключение рекламы</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">💫</span>
+                    <span>Анимированные аватары</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="button" id="participateBtn">✨ Участвовать в розыгрыше</button>
+
+        <div class="loading" id="loading">
+            <div class="loading-animation"><div></div><div></div></div>
+            <p>Проверяем вашу заявку...</p>
+        </div>
+
+        <div class="success" id="success">
+            <h2>🎉 Поздравляем!</h2>
+            <p>Вы успешно зарегистрированы в розыгрыше</p>
+            <p>Результаты будут объявлены 1 марта</p>
+        </div>
+    </div>
+
+    <canvas id="confetti" class="confetti"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.MainButton.hide();
+
+        document.getElementById('participateBtn').addEventListener('click', async () => {
+            const loading = document.getElementById('loading');
+            const success = document.getElementById('success');
+            const button = document.getElementById('participateBtn');
+            const confettiCanvas = document.getElementById('confetti');
+            
+            button.style.display = 'none';
+            loading.style.display = 'block';
+            
+            // Имитация проверки
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            loading.style.display = 'none';
+            success.style.display = 'block';
+
+            // Запускаем конфетти
+            confetti.create(confettiCanvas, {
+                resize: true,
+                useWorker: true
+            })({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            
+            // Отправляем данные в бот
+            tg.sendData(JSON.stringify({
+                action: 'participate',
+                user_id: tg.initDataUnsafe.user.id
+            }));
+            
+            // Закрываем WebApp через 3 секунды
+            setTimeout(() => {
+                tg.close();
+            }, 3000);
+        });
+
+        // Применяем цветовую схему Telegram
+        if (tg.colorScheme === 'dark') {
+            document.documentElement.style.setProperty('--tg-theme-bg-color', '#18222d');
+            document.documentElement.style.setProperty('--tg-theme-text-color', '#ffffff');
+        } else {
+            document.documentElement.style.setProperty('--tg-theme-bg-color', '#ffffff');
+            document.documentElement.style.setProperty('--tg-theme-text-color', '#18222d');
+        }
+    </script>
+</body>
+</html> 
