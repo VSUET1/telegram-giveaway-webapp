@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Розыгрыш Telegram Premium</title>
+    <title>О розыгрыше</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -9,8 +9,6 @@
         :root {
             --bg-color: #0f0f0f;
             --text-color: #ffffff;
-            --success-color: #4CAF50;
-            --primary-color: #3390ec;
             --card-bg: rgba(255, 255, 255, 0.1);
             --transition: all 0.3s ease;
         }
@@ -21,41 +19,29 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 20px;
-            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .header {
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
 
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--bg-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
+        .close-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 24px;
+            padding: 8px;
+            cursor: pointer;
+            opacity: 0.7;
         }
 
-        .loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid #FFF;
-            border-bottom-color: transparent;
-            border-radius: 50%;
-            display: inline-block;
-            box-sizing: border-box;
-            animation: rotation 1s linear infinite;
-            margin-bottom: 15px;
-        }
-
-        @keyframes rotation {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .title {
+            font-size: 24px;
+            margin-bottom: 20px;
         }
 
         .info-card {
@@ -63,17 +49,20 @@
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 15px;
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .title {
-            font-size: 20px;
+        .emoji-title {
+            font-size: 18px;
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .description {
@@ -82,288 +71,92 @@
         }
 
         .steps {
-            margin-bottom: 20px;
+            margin: 20px 0;
         }
 
         .step {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            gap: 10px;
         }
 
         .step-number {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 4px;
             padding: 2px 6px;
-            margin-right: 10px;
             font-size: 14px;
-        }
-
-        .prize-section {
-            margin-bottom: 20px;
-        }
-
-        .footer {
-            margin-top: 20px;
-            opacity: 0.8;
-            font-size: 14px;
+            min-width: 20px;
+            text-align: center;
         }
 
         .stats {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 14px;
             opacity: 0.8;
-        }
-
-        .success-screen {
-            display: none;
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .success-icon {
-            width: 120px;
-            height: 120px;
-            background: var(--success-color);
-            border-radius: 50%;
-            margin: 0 auto 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-        }
-
-        .ticket-info {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .ticket-icon {
-            font-size: 30px;
-        }
-
-        .ticket-details {
-            flex: 1;
-            text-align: left;
-        }
-
-        .timer {
-            font-size: 36px;
-            margin: 20px 0;
-            font-weight: bold;
-        }
-
-        .button {
-            background: var(--card-bg);
-            border: none;
-            border-radius: 12px;
-            padding: 15px 20px;
-            color: var(--text-color);
-            font-size: 16px;
-            width: 100%;
-            margin: 10px 0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .button:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .not-subscribed {
-            display: none;
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .warning-icon {
-            width: 120px;
-            height: 120px;
-            background: #ff3b30;
-            border-radius: 50%;
-            margin: 0 auto 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
         }
     </style>
 </head>
 <body>
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loader"></div>
-        <p>Загрузка данных...</p>
+    <div class="header">
+        <h1>О Розыгрыше</h1>
+        <button class="close-button" onclick="closeInfo()">✕</button>
     </div>
 
-    <div class="content" id="mainContent" style="display: none;">
-        <div class="info-card">
-            <div class="title">🤩 Конкурс на 1 год подписки "Телеграм Премиум"</div>
-            
-            <div class="description">
-                Просто подпишись на нужные каналы — и выиграй подписку "Телеграм Премиум" на 1 год!
-            </div>
-            
-            <div class="steps">
-                <div class="step">
-                    <span class="step-number">1</span>
-                    <span>Подпишись на наш канал и партнёрские каналы из списка ниже.</span>
-                </div>
-                <div class="step">
-                    <span class="step-number">2</span>
-                    <span>Жди розыгрыша — год премиум-функций Telegram может стать твоим!</span>
-                </div>
-            </div>
-            
-            <div class="prize-section">
-                <div>Что ты получишь, если победишь:</div>
-                <div>🚀 Telegram Премиум на год: эксклюзивные стикеры, анимированные эмодзи, отсутствие рекламы и другие крутые фишки!</div>
-            </div>
-            
-            <div class="footer">
-                Не упусти шанс общаться с комфортом и креативом. Подписывайся, участвуй — и удача будет на твоей стороне!
-            </div>
-            
-            <div>📅 Итоги опубликуем 1 марта.</div>
-            
-            <div>Твой Telegram станет круче — успевай! ✨</div>
-            
-            <div class="stats">
-                <span>Участников: <span id="participantsCount">0</span></span>
-                <span>Призовых мест: 1</span>
-            </div>
+    <div class="info-card">
+        <div class="emoji-title">
+            🤩 Конкурс на 1 год подписки "Телеграм Премиум"
         </div>
-    </div>
 
-    <div class="success-screen" id="successScreen">
-        <div class="success-icon">✓</div>
-        <h1>Вы участвуете в розыгрыше!</h1>
-        <p>Не отписывайтесь от каналов до окончания розыгрыша!</p>
-        
-        <div class="timer" id="timer">4 дня, 17:23:23</div>
-        <p>До завершения</p>
+        <div class="description">
+            Просто подпишись на нужные каналы — и выиграй подписку "Телеграм Премиум" на 1 год!
+        </div>
 
-        <div class="ticket-info">
-            <span class="ticket-icon">🎫</span>
-            <div class="ticket-details">
-                <div>Билет: <strong id="ticketNumber">2EVVL4</strong></div>
-                <div style="opacity: 0.7;">Получен: <span id="ticketDate">13.02.2024, 08:20</span></div>
+        <div class="steps">
+            <div class="step">
+                <span class="step-number">1</span>
+                <span>Подпишись на наш канал и партнёрские каналы из списка ниже.</span>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <span>Жди розыгрыша — год премиум-функций Telegram может стать твоим!</span>
             </div>
         </div>
 
-        <button class="button" onclick="showInfo()">Подробнее о розыгрыше</button>
-    </div>
-
-    <div class="not-subscribed" id="notSubscribedScreen">
-        <div class="warning-icon">!</div>
-        <h1>Требуется подписка</h1>
-        <p>Для участия в розыгрыше необходимо подписаться на канал:</p>
-        
-        <div class="ticket-info">
-            <span class="ticket-icon">📢</span>
-            <div class="ticket-details">
-                <div><strong>Зовут Шторм</strong></div>
-                <div style="opacity: 0.7;">Основной канал</div>
-            </div>
-            <a href="https://t.me/there_storm" class="button" style="width: auto;">Подписаться</a>
+        <div class="description">
+            <strong>Что ты получишь, если победишь:</strong><br>
+            🚀 Telegram Премиум на год: эксклюзивные стикеры, анимированные эмодзи, отсутствие рекламы и другие крутые фишки!
         </div>
 
-        <button class="button" onclick="checkSubscription()">Проверить подписку</button>
+        <div class="description">
+            Не упусти шанс общаться с комфортом и креативом. Подписывайся, участвуй — и удача будет на твоей стороне!
+        </div>
+
+        <div class="description">
+            📅 Итоги опубликуем 1 марта.
+        </div>
+
+        <div class="description">
+            Твой Telegram станет круче — успевай! ✨
+        </div>
+
+        <div class="stats">
+            <span>Участников: 0</span>
+            <span>Призовых мест: 1</span>
+        </div>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Функция для генерации случайного билета
-        function generateTicket() {
-            return Math.random().toString(36).substring(2, 8).toUpperCase();
+        function closeInfo() {
+            tg.close();
         }
-
-        // Функция для форматирования даты
-        function formatDate(date) {
-            return date.toLocaleString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        // Имитация проверки подписки
-        async function checkSubscription() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            const successScreen = document.getElementById('successScreen');
-            const notSubscribedScreen = document.getElementById('notSubscribedScreen');
-            
-            loadingScreen.style.display = 'flex';
-            notSubscribedScreen.style.display = 'none';
-            
-            // Имитация загрузки
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            // Здесь должна быть реальная проверка подписки
-            const isSubscribed = Math.random() > 0.5; // Имитация результата
-            
-            if (isSubscribed) {
-                document.getElementById('ticketNumber').textContent = generateTicket();
-                document.getElementById('ticketDate').textContent = formatDate(new Date());
-                successScreen.style.display = 'block';
-                loadingScreen.style.display = 'none';
-            } else {
-                notSubscribedScreen.style.display = 'block';
-                loadingScreen.style.display = 'none';
-            }
-        }
-
-        // Начальная проверка при загрузке
-        window.onload = checkSubscription;
-
-        function showInfo() {
-            // Здесь можно добавить показ дополнительной информации
-            alert('Информация о розыгрыше');
-        }
-
-        // Функция для обновления таймера
-        function updateTimer() {
-            const endDate = new Date('2024-03-01T00:00:00');
-            const now = new Date();
-            const diff = endDate - now;
-
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            document.getElementById('timer').textContent = 
-                `${days} дней, ${hours}:${minutes}:${seconds}`;
-        }
-
-        // Показываем контент после загрузки
-        window.onload = async () => {
-            // Имитация загрузки
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-            
-            // Запускаем таймер
-            setInterval(updateTimer, 1000);
-        };
-
-        // Обработка данных от бота
-        tg.onEvent('mainButtonClicked', function(){
-            tg.sendData(JSON.stringify({action: 'getInfo'}));
-        });
     </script>
 </body>
 </html> 
