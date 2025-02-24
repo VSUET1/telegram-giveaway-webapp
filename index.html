@@ -41,39 +41,80 @@
             z-index: 1000;
         }
 
-        .loading-animation {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .magnifier {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--primary-color);
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: transparent;
             border-radius: 50%;
-            animation: searchAnimation 2s infinite;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+            margin-bottom: 15px;
         }
 
-        .magnifier:after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            right: -15px;
-            width: 4px;
-            height: 25px;
-            background: var(--primary-color);
-            transform: rotate(45deg);
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        @keyframes searchAnimation {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(15px, 15px) rotate(90deg); }
-            50% { transform: translate(0, 30px) rotate(180deg); }
-            75% { transform: translate(-15px, 15px) rotate(270deg); }
-            100% { transform: translate(0, 0) rotate(360deg); }
+        .info-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .title {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .steps {
+            margin-bottom: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .step-number {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 2px 6px;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .prize-section {
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.8;
         }
 
         .success-screen {
@@ -159,10 +200,47 @@
 </head>
 <body>
     <div class="loading-screen" id="loadingScreen">
-        <div class="loading-animation">
-            <div class="magnifier"></div>
-        </div>
+        <div class="loader"></div>
         <p>Загрузка данных...</p>
+    </div>
+
+    <div class="content" id="mainContent" style="display: none;">
+        <div class="info-card">
+            <div class="title">🤩 Конкурс на 1 год подписки "Телеграм Премиум"</div>
+            
+            <div class="description">
+                Просто подпишись на нужные каналы — и выиграй подписку "Телеграм Премиум" на 1 год!
+            </div>
+            
+            <div class="steps">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <span>Подпишись на наш канал и партнёрские каналы из списка ниже.</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <span>Жди розыгрыша — год премиум-функций Telegram может стать твоим!</span>
+                </div>
+            </div>
+            
+            <div class="prize-section">
+                <div>Что ты получишь, если победишь:</div>
+                <div>🚀 Telegram Премиум на год: эксклюзивные стикеры, анимированные эмодзи, отсутствие рекламы и другие крутые фишки!</div>
+            </div>
+            
+            <div class="footer">
+                Не упусти шанс общаться с комфортом и креативом. Подписывайся, участвуй — и удача будет на твоей стороне!
+            </div>
+            
+            <div>📅 Итоги опубликуем 1 марта.</div>
+            
+            <div>Твой Telegram станет круче — успевай! ✨</div>
+            
+            <div class="stats">
+                <span>Участников: <span id="participantsCount">0</span></span>
+                <span>Призовых мест: 1</span>
+            </div>
+        </div>
     </div>
 
     <div class="success-screen" id="successScreen">
@@ -254,6 +332,38 @@
             // Здесь можно добавить показ дополнительной информации
             alert('Информация о розыгрыше');
         }
+
+        // Функция для обновления таймера
+        function updateTimer() {
+            const endDate = new Date('2024-03-01T00:00:00');
+            const now = new Date();
+            const diff = endDate - now;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('timer').textContent = 
+                `${days} дней, ${hours}:${minutes}:${seconds}`;
+        }
+
+        // Показываем контент после загрузки
+        window.onload = async () => {
+            // Имитация загрузки
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            
+            // Запускаем таймер
+            setInterval(updateTimer, 1000);
+        };
+
+        // Обработка данных от бота
+        tg.onEvent('mainButtonClicked', function(){
+            tg.sendData(JSON.stringify({action: 'getInfo'}));
+        });
     </script>
 </body>
 </html> 
